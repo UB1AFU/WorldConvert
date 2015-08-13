@@ -1,6 +1,15 @@
 # Build Folders (you can keep bin if you'd like, to store dlls and pdbs)
-bin
+bin\Debug
 obj
 
 # mstest test results
 TestResults
+*.pdb
+bin/Release/BCrypt.Net.dll
+bin/Release/Mono.Data.Sqlite.dll
+bin/Release/HttpServer.xml
+bin/Release/MySql.Data.dll
+bin/Release/HttpServer.dll
+bin/Release/Newtonsoft.Json.dll
+bin/Release/TerrariaServer.exe
+bin/Release/TShockAPI.dll

@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using TShockAPI;
 using Terraria;
+using TerrariaApi.Server;
+using TShockAPI;
 
 namespace WorldConvert
 {
@@ -15,7 +14,7 @@ namespace WorldConvert
         meteor,
         jungle,
     }
-    [APIVersion(1, 12)]
+    [ApiVersion(1, 21)]
     public class WorldConvert : TerrariaPlugin
     {
         private Dictionary<ConvertPair, Dictionary<int, int>> conversions;
@@ -37,7 +36,7 @@ namespace WorldConvert
 
         public override Version Version
         {
-            get { return new Version(1, 0); }
+            get { return new Version(1, 1); }
         }
 
         public WorldConvert(Main game) : base(game)
@@ -83,8 +82,8 @@ namespace WorldConvert
 
         public override void Initialize()
         {
-            Commands.ChatCommands.Add(new Command("wconvert", ConvertBiome, "convert"));
-            Commands.ChatCommands.Add(new Command("wconvert", RemoveBiome, "remove"));
+            Commands.ChatCommands.Add(new Command("wconvert", ConvertBiome, "convw"));
+            Commands.ChatCommands.Add(new Command("wconvert", RemoveBiome, "remow"));
         }
 
         private void ConvertBiome(CommandArgs args)
@@ -136,7 +135,7 @@ namespace WorldConvert
                         Main.tile[x, y].type = (byte) tiles[type];
                         if (tiles[type] == 0)
                         {
-                            Main.tile[x, y].active = false;
+                            Main.tile[x, y].active(false);
                         }
                     }
                 }
@@ -145,7 +144,7 @@ namespace WorldConvert
             WorldGen.CountTiles(0);
             TSPlayer.All.SendData(PacketTypes.UpdateGoodEvil);
             Netplay.ResetSections();
-            TShock.Utils.Broadcast("Conversion is complete.");
+            TShock.Utils.Broadcast("Conversion is complete.", Color.Green);
             return true;
         }
 
@@ -187,6 +186,13 @@ namespace WorldConvert
         private Biome outb;
         private Dictionary<int, int> tiles;
 
+        public ConvertPair(Biome inb, Biome outb)
+        {
+            From = inb;
+            To = outb;
+            tiles = new Dictionary<int, int>();
+        }
+
         public Biome From
         {
             get { return inb; }
@@ -201,14 +207,8 @@ namespace WorldConvert
 
         public Dictionary<int, int> Tiles
         {
-            get { return tiles; }
-        }
-
-        public ConvertPair(Biome inb, Biome outb)
-        {
-            From = inb;
-            To = outb;
-            tiles = new Dictionary<int, int>();
+            get 
+            { return tiles; }
         }
 
         public override bool Equals(object obj)
@@ -237,8 +237,7 @@ namespace WorldConvert
 
         public int GetHashCode(ConvertPair x)
         {
-            return (int) (x.To)*13 + (int) (x.From)*13;
+            return (int)(x.To) * 13 + (int)(x.From) * 13;
         }
-
     }
 }
